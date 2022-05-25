@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://kit.fontawesome.com/bba89f3e3a.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <title>Notion</title>
+  </head>
+  <body>
+    <div class="main_section">
+      <div class="sidebar_container">
+        <div class="sidebar">
+          <div class="name_container">
+            <div class="name_section">
+              <span class="name_logo">
+                <!-- Logo First Letter -->
+              </span>
+              <span
+                onkeypress="return (this.innerText.length <= 10)"
+                contenteditable="true"
+                class="user_name"
+              >
+              </span>
+              <span>Notion</span>
+            </div>
+            <button class="menu_toggle_menu">
+              <i class="fa-solid fa-angles-left"></i>
+            </button>
+          </div>
+          <button class="settings_toggle">
+            <div class="settings_container">
+              <i class="fa-solid fa-gear"></i>
+              <p>Settings</p>
+            </div>
+          </button>
+          <div class="settings_modal">
+            <div class="settings_box">
+              <div id="settings_sidebar">
+                <span id="user_name_settings"></span>
+                <div class="theme_container">
+                  <i class="fa-solid fa-circle-half-stroke"></i>
+                  <p>Theme</p>
+                </div>
+                <div class="language_container">
+                  <i class="fa-solid fa-globe"></i>
+                  <p>Language</p>
+                </div>
+              </div>
+              <div class="text_set">
+                <div id="texts">
+                  <p id="option_text"></p>
+                  <p id="under_text"></p>
+                </div>
+                <div class="option_icon"></div>
+              </div>
+            </div>
+          </div>
+          <div class="pages_container">
+            <button class="page_header_toggle">
+              <h2>Pages</h2>
+              <i class="fa-solid fa-plus"></i>
+            </button>
+            <div class="pages_box" data-pages>// pages location</div>
+          </div>
+        </div>
+        <button class="menu_toggle_menu second">
+          <i class="fa-solid fa-angles-left"></i>
+        </button>
+      </div>
+
+      <div class="section_box">
+        <div class="content_section">
+          <h2 data-page-title class="page_title"></h2>
+          <div class="row">
+            <button class="add_template_btn">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+            <div class="block_selection">
+              <h2>Blocks</h2>
+              <div class="block_box">
+                <div class="block" data-text_block>
+                  <img src="Images/text_block_img.png" alt="" />
+                  <div class="text_box">
+                    <p>Text</p>
+                    <p>Just start writing with plain text.</p>
+                  </div>
+                </div>
+
+                <div class="block" data-to_do_block>
+                  <img src="Images/to_do_list.png" alt="" />
+                  <div class="text_box">
+                    <p>To-do list</p>
+                    <p>Track tasks with a to-do list.</p>
+                  </div>
+                </div>
+
+                <div class="block" data-header_h1_block>
+                  <img src="Images/header_h1.png" alt="" />
+                  <div class="text_box">
+                    <p>Heading 1</p>
+                    <p>Big section heading.</p>
+                  </div>
+                </div>
+
+                <div class="block" data-header_h2_block>
+                  <img src="Images/header_h2.png" alt="" />
+                  <div class="text_box">
+                    <p>Heading 2</p>
+                    <p>Medium section heading.</p>
+                  </div>
+                </div>
+
+                <div class="block" data-bulleted_block>
+                  <img src="Images/bulleted_list.png" alt="" />
+                  <div class="text_box">
+                    <p>Bulleted list</p>
+                    <p>Create a simple bulleted list.</p>
+                  </div>
+                </div>
+
+                <div class="block" data-numbered_block>
+                  <img src="Images/numbered_list.png" alt="" />
+                  <div class="text_box">
+                    <p>Numbered list</p>
+                    <p>Create a list with numbering.</p>
+                  </div>
+                </div>
+
+                <div class="block" data-toggle_block>
+                  <img src="Images/toggle.png" alt="" />
+                  <div class="text_box">
+                    <p>Toggle list</p>
+                    <p>Toggles can hide and show content inside.</p>
+                  </div>
+                </div>
+
+                <div class="block" data-quote_block>
+                  <img src="Images/quote.png" alt="" />
+                  <div class="text_box">
+                    <p>Quote</p>
+                    <p>Capture a quote.</p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="text">
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script defer src="app.js"></script>
+  </body>
+</html>
