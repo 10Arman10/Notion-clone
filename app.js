@@ -14,12 +14,120 @@ const name_logo = document.querySelector(".name_logo");
 const content_section = document.querySelector(".content_section");
 const add_template_btns = document.querySelectorAll(".add_template_btn")
 const blocks = document.querySelectorAll(".block");
+const favorite_box = document.querySelector(".favorites_container");
+const upper_text = document.querySelector(".upper_text");
+const talk_toggle = document.querySelector("[data-talk_toggle]")
 
 const LOCAL_STOREAGE_KEY = "page_lists";
 const LOCAL_STOREAGE_ACTIVE_KEY = "page_lists_active";
 
 let pages = JSON.parse(localStorage.getItem( LOCAL_STOREAGE_KEY ) ) || [];
-let pages_active_list = localStorage.getItem( LOCAL_STOREAGE_ACTIVE_KEY )
+let pages_active_list = localStorage.getItem( LOCAL_STOREAGE_ACTIVE_KEY );
+
+
+//Speech Reciginition
+
+let talk_i = talk_toggle.children[0].outerHTML;
+
+window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+const recogntion = new window.SpeechRecognition();
+recogntion.interimResults = true;
+
+let text_result = document.createElement("p");
+
+talk_toggle.addEventListener("click" , () => {
+    if (talk_i === `<i class="fa-solid fa-microphone"></i>`){
+        recogntion.start();
+        talk_i = `<i class="fa-solid fa-microphone-slash"></i>`;
+    } else {
+        recogntion.stop();
+        talk_i = `<i class="fa-solid fa-microphone"></i>`;
+    }
+    talk_toggle.innerHTML = talk_i;
+})
+
+recogntion.addEventListener("end" , () => {
+    talk_i = `<i class="fa-solid fa-microphone"></i>`;
+    talk_toggle.innerHTML = talk_i;
+})
+
+recogntion.addEventListener("result" , e => {
+    const row = document.querySelector(".row");
+    const text_row = row.querySelector(".text");
+    let tasks = selected_page[0].tasks;
+
+    const text_p_speech = Array.from(e.results)
+    .map(result => result[0])
+    .map(result => result.transcript)
+    .join("");
+
+    text_result.innerText = text_p_speech;
+    text_result.classList.add("text_p")
+    text_row.appendChild(text_result)
+    
+    if (e.results[0].isFinal) {
+        if (text_p_speech.includes("create paragraph")) {
+            console.log("paragraph")
+            let text = text_result.innerText.replaceAll(/create paragraph/ig , "")
+            let block_ID_SET = Date.now().toString(); 
+            const create_block = setBlock( text , block_ID_SET);
+            selected_page[0].tasks.push(create_block);
+        }
+        if (text_p_speech.includes("create to-do")) {
+            console.log("To-do app")
+            let text = text_result.innerText.replaceAll(/create to-do/ig , "")
+            let block_ID_SET = Date.now().toString(); 
+            const create_block = setBlock_text_todo(text , block_ID_SET);
+            selected_page[0].tasks.push(create_block);
+        }
+        if (text_p_speech.includes("create heading 1")) {
+            console.log("Heading 1")
+            let text = text_result.innerText.replaceAll(/create heading 1/ig , "")
+            let block_ID_SET = Date.now().toString(); 
+            const create_block = setBlock_heading_one(text , block_ID_SET);
+            selected_page[0].tasks.push(create_block);
+        }
+        if (text_p_speech.includes("create heading to")) {
+            console.log("Heading 2")
+            let text = text_result.innerText.replaceAll(/create heading to/ig , "")
+            let block_ID_SET = Date.now().toString(); 
+            const create_block = setBlock_heading_two(text , block_ID_SET);
+            selected_page[0].tasks.push(create_block);
+        }
+        if (text_p_speech.includes("create bulleted list")) {
+            console.log("Bulleted list")
+            let text = text_result.innerText.replaceAll(/create bulleted list/ig , "")
+            let block_ID_SET = Date.now().toString(); 
+            const create_block = setBlock_bulleted(text , block_ID_SET);
+            selected_page[0].tasks.push(create_block);
+        }
+        if (text_p_speech.includes("create number list")) {
+            console.log("Numbered list")
+            let text = text_result.innerText.replaceAll(/create numbered list/ig , "")
+            let block_ID_SET = Date.now().toString(); 
+            const create_block = setBlock_numbered(text , block_ID_SET);
+            selected_page[0].tasks.push(create_block);
+        }
+        if (text_p_speech.includes("create toggle list")) {
+            console.log("Toggle list")
+            let text = text_result.innerText.replaceAll(/create toggle list/ig , "")
+            let block_ID_SET = Date.now().toString(); 
+            const create_block = setBlock_toggle(text , block_ID_SET);
+            selected_page[0].tasks.push(create_block);
+        }
+        if (text_p_speech.includes("create quote")) {
+            console.log("Quote list")
+            let text = text_result.innerText.replaceAll(/create quote/ig , "")
+            let block_ID_SET = Date.now().toString(); 
+            const create_block = setBlock_quote(text , block_ID_SET);
+            selected_page[0].tasks.push(create_block);
+        }
+        sat()
+    }
+    
+    save()
+})
 
 //Adding Templates
 add_template_btns.forEach(add_btn => {
@@ -489,13 +597,13 @@ function createPageElement() {
         page_box_delete_text.innerText = "Delete";
         page_box_delete.appendChild(page_box_delete_text);
 
-        const page_box_favourite = document.createElement("button");
-        page_box_favourite.classList.add("page_box_favourite");
-        page_box_favourite.innerHTML = `<i class="fa-regular fa-star"></i>`;
-        page_menu_box.appendChild(page_box_favourite);
-        const page_box_favourite_text = document.createElement("p");
-        page_box_favourite_text.innerText = "Add to Favorities";
-        page_box_favourite.appendChild(page_box_favourite_text);
+        const page_box_favorite = document.createElement("button");
+        page_box_favorite.classList.add("page_box_favorite");
+        page_box_favorite.innerHTML = `<i class="fa-regular fa-star"></i>`;
+        page_menu_box.appendChild(page_box_favorite);
+        const page_box_favorite_text = document.createElement("p");
+        page_box_favorite_text.innerText = "Add to Favorities";
+        page_box_favorite.appendChild(page_box_favorite_text);
 
         const page_box_rename = document.createElement("button");
         page_box_rename.classList.add("page_box_rename");
@@ -569,6 +677,7 @@ function createPageElement() {
             const index = pages.map(e => e.id).indexOf(pages_active_list);
             section_title.dataset.id = pages[index].id
             section_title.innerText = pages[index].name;
+            upper_text.innerText = pages[index].name;
             page_parent.classList.add("active_page_list");
             sat()
         }
@@ -658,8 +767,10 @@ menu_toggle_btn.forEach(toggle => {
         sidebar.classList.toggle("hide_menu");
         if (sidebar.classList[1] === "hide_menu") {
             content_section.style.left = "2rem";
+            upper_text.style.left = "4rem";
         } else {
             content_section.style.left = "24rem";
+            upper_text.style.left = "24rem";
         }
     })
 })
