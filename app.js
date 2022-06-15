@@ -14,9 +14,10 @@ const name_logo = document.querySelector(".name_logo");
 const content_section = document.querySelector(".content_section");
 const add_template_btns = document.querySelectorAll(".add_template_btn")
 const blocks = document.querySelectorAll(".block");
-const favorite_box = document.querySelector(".favorites_container");
+const favorite_box = document.querySelector(".favorite_box");
 const upper_text = document.querySelector(".upper_text");
-const talk_toggle = document.querySelector("[data-talk_toggle]")
+const talk_toggle = document.querySelector("[data-talk_toggle]");
+const text_parent = document.querySelector(".text");
 
 const LOCAL_STOREAGE_KEY = "page_lists";
 const LOCAL_STOREAGE_ACTIVE_KEY = "page_lists_active";
@@ -24,35 +25,34 @@ const LOCAL_STOREAGE_ACTIVE_KEY = "page_lists_active";
 let pages = JSON.parse(localStorage.getItem( LOCAL_STOREAGE_KEY ) ) || [];
 let pages_active_list = localStorage.getItem( LOCAL_STOREAGE_ACTIVE_KEY );
 
-
 //Speech Reciginition
 
 let talk_i = talk_toggle.children[0].outerHTML;
 
 window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-const recogntion = new window.SpeechRecognition();
-recogntion.interimResults = true;
+const recognition = new window.SpeechRecognition();
+recognition.interimResults = true;
 
 let text_result = document.createElement("p");
 
 talk_toggle.addEventListener("click" , () => {
-    if (talk_i === `<i class="fa-solid fa-microphone"></i>`){
-        recogntion.start();
-        talk_i = `<i class="fa-solid fa-microphone-slash"></i>`;
-    } else {
-        recogntion.stop();
+    if(talk_i === `<i class="fa-solid fa-microphone"></i>`) {
+        recognition.start();
+        talk_i = `<i class="fa-solid fa-microphone-slash"></i>`
+    }else {
+        recognition.stop();
         talk_i = `<i class="fa-solid fa-microphone"></i>`;
     }
     talk_toggle.innerHTML = talk_i;
 })
 
-recogntion.addEventListener("end" , () => {
+recognition.addEventListener("end" , () => {
     talk_i = `<i class="fa-solid fa-microphone"></i>`;
     talk_toggle.innerHTML = talk_i;
 })
 
-recogntion.addEventListener("result" , e => {
+recognition.addEventListener("result" , e => {
     const row = document.querySelector(".row");
     const text_row = row.querySelector(".text");
     let tasks = selected_page[0].tasks;
@@ -123,11 +123,18 @@ recogntion.addEventListener("result" , e => {
             const create_block = setBlock_quote(text , block_ID_SET);
             selected_page[0].tasks.push(create_block);
         }
+        if (text_p_speech.includes("create call")) {
+            console.log("Callout list")
+            let text = text_result.innerText.replaceAll(/create call/ig , "")
+            let block_ID_SET = Date.now().toString(); 
+            const create_block = setBlock_callout(text , block_ID_SET);
+            selected_page[0].tasks.push(create_block);
+        }
         sat()
     }
     
     save()
-})
+}) 
 
 //Adding Templates
 add_template_btns.forEach(add_btn => {
@@ -166,6 +173,9 @@ function isBlock(e) {
     }
     if(target.hasAttribute("data-quote_block")) {
         saveBlock_quote();
+    }
+    if(target.hasAttribute("data-callout_block")) {
+        saveBlock_callout();
     }
 }
 
@@ -242,6 +252,15 @@ function saveBlock_quote() {
     save()
 }
 
+function saveBlock_callout() {
+    selected_page = pages.filter(page => page.id == pages_active_list);
+    const block_title_name = "";
+    const block_ID_SET =  Date.now().toString();
+    const create_block = setBlock_callout(block_title_name , block_ID_SET);
+    selected_page[0].tasks.push(create_block)
+    save()
+}
+
 function sat(e) {
     selected_page = pages.filter(page => page.id == pages_active_list);
     const row = document.querySelector(".row");
@@ -252,36 +271,40 @@ function sat(e) {
         if(task.paragraph === true) {
             const text_p = document.createElement("p");
             text_p.innerText = task.name;
-            text_p.dataset.text = "Type //"
+            text_p.dataset.text = "Type"
             text_p.dataset.ID = task.id;
             text_p.contentEditable = "true";
             text_p.classList.add("text_p");
+            text_p.classList.add("text_child");
             text_row.appendChild(text_p)
         }
         if (task.heading_one === true) {
             const text_h1 = document.createElement("h1");
             text_h1.innerText = task.name;
-            text_h1.dataset.text = "Heading 1 //"
+            text_h1.dataset.text = "Heading 1"
             text_h1.dataset.ID = task.id;
             text_h1.contentEditable = "true";
             text_h1.classList.add("text_h1");
+            text_h1.classList.add("text_child");
             text_row.appendChild(text_h1)
         }
         if (task.heading_two === true) {
             const text_h2 = document.createElement("h2");
             text_h2.innerText = task.name;
-            text_h2.dataset.text = "Heading 2 //"
+            text_h2.dataset.text = "Heading 2"
             text_h2.dataset.ID = task.id;
             text_h2.contentEditable = "true";
             text_h2.classList.add("text_h2");
+            text_h2.classList.add("text_child");
             text_row.appendChild(text_h2);
         }
         if (task.text_todo === true) {
             const todo_box = document.createElement("div");
             todo_box.classList.add("todo_box");
+            todo_box.classList.add("text_child");
             const text_p_todo = document.createElement("p");
             text_p_todo.innerText = task.name;
-            text_p_todo.dataset.text = "To-do //"
+            text_p_todo.dataset.text = "To-do"
             text_p_todo.dataset.ID = task.id;
             text_p_todo.contentEditable = "true";
             const checkbox = document.createElement('input');
@@ -322,19 +345,21 @@ function sat(e) {
         if(task.bulleted === true) {
             const text_p_bulleted = document.createElement("li");
             text_p_bulleted.innerText = task.name;
-            text_p_bulleted.dataset.text = "List //"
+            text_p_bulleted.dataset.text = "List"
             text_p_bulleted.dataset.ID = task.id;
             text_p_bulleted.contentEditable = "true";
             text_p_bulleted.classList.add("text_p_bulleted");
+            text_p_bulleted.classList.add("text_child");
             text_row.appendChild(text_p_bulleted)
         }
         if(task.numbered === true) {
             const text_p_numbered = document.createElement("li");
             text_p_numbered.innerText = task.name;
-            text_p_numbered.dataset.text = "List //"
+            text_p_numbered.dataset.text = "List"
             text_p_numbered.dataset.ID = task.id;
             text_p_numbered.contentEditable = "true";
             text_p_numbered.classList.add("text_p_numbered");
+            text_p_numbered.classList.add("text_child");
             text_row.appendChild(text_p_numbered)
         }
         if(task.toggle === true) {
@@ -347,7 +372,8 @@ function sat(e) {
             toggle_toggle.innerHTML = `<i class="fa-solid fa-play"></i>`
             toggle_text.innerText = task.name;
             toggle_text.classList.add("toggle_text");
-            toggle_text.dataset.text = "Toggle //"
+            toggle_text.classList.add("text_child");
+            toggle_text.dataset.text = "Toggle"
             toggle_text.dataset.ID = task.id;
             toggle_box.dataset.ID = task.id
             toggle_toggle.dataset.ID = task.id
@@ -358,7 +384,7 @@ function sat(e) {
             toggle_content.classList.add("toggle_content");
             toggle_content_text.classList.add("toggle_content_text");
             toggle_content_text.contentEditable = "true";
-            toggle_content_text.dataset.text = "Text //";
+            toggle_content_text.dataset.text = "Text";
             toggle_container.classList.add("toggle_container");
             toggle_content_text.dataset.ID = task.id;
             toggle_content_text.addEventListener("input" , () => {
@@ -380,11 +406,25 @@ function sat(e) {
         if(task.quote === true) {
             const text_p_quote = document.createElement("p");
             text_p_quote.innerText = task.name;
-            text_p_quote.dataset.text = "Type //"
+            text_p_quote.dataset.text = "Type"
             text_p_quote.dataset.ID = task.id;
             text_p_quote.contentEditable = "true";
             text_p_quote.classList.add("text_p_quote");
+            text_p_quote.classList.add("text_child");
             text_row.appendChild(text_p_quote);
+        }
+        if(task.callout === true) {
+            const text_callout_box = document.createElement("div");
+            text_callout_box.classList.add("text_callout_box");
+            text_callout_box.classList.add("text_child");
+            const text_p_callout = document.createElement("p");
+            text_p_callout.innerText = task.name;
+            text_p_callout.dataset.text = "Type"
+            text_p_callout.dataset.ID = task.id;
+            text_p_callout.contentEditable = "true";
+            text_p_callout.classList.add("text_p_callout");
+            text_callout_box.appendChild(text_p_callout)
+            text_row.appendChild(text_callout_box);
         }
     })
 
@@ -397,7 +437,11 @@ function sat(e) {
         const row_text = row.querySelector(".text");
         let text_id = e.target.dataset.ID
         const index = tasks.findIndex(task => task.id === text_id);
-        let index_name = tasks[index].name;
+        if(tasks[index] === undefined) {
+            return
+        }else {
+            const index_name = tasks[index].name;
+        }
         let target = e.target
         if(target.classList[0] === "text_p_todo") {
             target.addEventListener("keypress" , w => {
@@ -425,6 +469,13 @@ function sat(e) {
                         } else if (target.classList[0] == "toggle_text"){
                             if (row_text.contains(target.parentElement.parentElement)) {
                                 row_text.removeChild(target.parentElement.parentElement);
+                                tasks.splice(index , 1);
+                            } else {
+                                return
+                            }
+                        }else if(target.classList[0] == "text_p_callout") {
+                            if (row_text.contains(target.parentElement)) {
+                                row_text.removeChild(target.parentElement);
                                 tasks.splice(index , 1);
                             } else {
                                 return
@@ -512,17 +563,13 @@ function setBlock_quote(name , ID_SET) {
     }
 }
 
-// const page_title = document.querySelector("[data-page-title]");
-
-// page_title.addEventListener("click" , () => {
-//     page_title.contentEditable = "true";
-//     page_title.addEventListener("input" , () => {
-//        let page_name = page_title.innerText;
-//        const index = pages.map(e => e.id).indexOf(pages_active_list);
-//        pages[index].name = page_name;
-//        save()
-//     })
-// })
+function setBlock_callout(name , ID_SET) {
+    return {
+        id: ID_SET , 
+        name : name, 
+        callout : true
+    }
+}
 
 function createTemplate(e) {
     const block = document.querySelector(".block_selection");
@@ -597,14 +644,6 @@ function createPageElement() {
         page_box_delete_text.innerText = "Delete";
         page_box_delete.appendChild(page_box_delete_text);
 
-        const page_box_favorite = document.createElement("button");
-        page_box_favorite.classList.add("page_box_favorite");
-        page_box_favorite.innerHTML = `<i class="fa-regular fa-star"></i>`;
-        page_menu_box.appendChild(page_box_favorite);
-        const page_box_favorite_text = document.createElement("p");
-        page_box_favorite_text.innerText = "Add to Favorities";
-        page_box_favorite.appendChild(page_box_favorite_text);
-
         const page_box_rename = document.createElement("button");
         page_box_rename.classList.add("page_box_rename");
         page_box_rename.innerHTML = `<i class="fa-solid fa-pen-to-square"></i>`;
@@ -635,6 +674,7 @@ function createPageElement() {
             pages[page_index] = input;
             let section_title = content_section.children[0];
             section_title.innerText = page.name;
+            console.log(page)
             save()
         }
 
@@ -646,12 +686,11 @@ function createPageElement() {
 
         function listMenuSection(e) {
             if (e.target === page_menu_box || 
-                e.target === page_menu) {
+                e.target === page_menu ) {
                 return
             } else {
                 page_menu_box.classList.remove("page_menu_box_show");
             }
-
             if (page_title_input_main.classList[1] === "page_menu_box_show") {
                 if (e.target.classList[0] === "page_title_input" ||
                     e.target.classList[0] === "page_box_rename" ||
@@ -743,10 +782,12 @@ const settings_options = [{
     text : "Language",
     under_text : "Change the language used in the user interface.",
     icon: `
-    <button class="knight">
+    <button class="languageSelect_btn">
         <i class="fa-solid fa-language" class="language"></i>
     </button>`
 }]
+
+
 
 // //Set User Name
 user_name.addEventListener("input" , () => {
@@ -767,10 +808,12 @@ menu_toggle_btn.forEach(toggle => {
         sidebar.classList.toggle("hide_menu");
         if (sidebar.classList[1] === "hide_menu") {
             content_section.style.left = "2rem";
-            upper_text.style.left = "4rem";
+            // upper_text.style.left = "4rem";
+            document.querySelector(".main_box").style.padding = "0 2rem 0 4rem"
         } else {
             content_section.style.left = "24rem";
-            upper_text.style.left = "24rem";
+            // upper_text.style.left = "24rem";
+            document.querySelector(".main_box").style.padding = "0 2rem 0 22rem"
         }
     })
 })
@@ -799,11 +842,91 @@ settings_sidebar.addEventListener("click" , e => {
         option_text.innerText = settings_options[1].text;
         under_text.innerText = settings_options[1].under_text;
         option_icon.innerHTML = settings_options[1].icon;
-        document.querySelector(".knight").addEventListener("click" , () => {
-            //
+        document.querySelector(".languageSelect_btn").addEventListener("click" , () => {
+            if (!localStorage.getItem("lang")) {
+                localStorage.setItem("lang" , "eng");
+            }
+            switch(localStorage.getItem("lang")) {
+                case "eng" :
+                    localStorage.setItem("lang" , "ru");
+                    settings_options[0].text = "Вид"
+                    settings_options[0].under_text = "Настройте внешний вид Notion на вашем устройстве."
+                    settings_options[1].text = "Язык"
+                    settings_options[1].under_text = "Измените язык, используемый в пользовательском интерфейсе."
+                    document.querySelector(".settings_container p").innerText = "Настройки"
+                    document.querySelector(".page_header_toggle h2").innerText = "Страницы"
+                    document.querySelector(".theme_container p").innerText = "Тема"
+                    document.querySelector(".language_container p").innerText = "Язык"
+                    option_text.innerText = settings_options[1].text;
+                    under_text.innerText = settings_options[1].under_text;
+                    document.querySelectorAll(".page_box_delete p").forEach(d => {
+                        d.innerText = "Удалить"
+                    })
+                    document.querySelectorAll(".page_box_rename p").forEach(d => {
+                        d.innerText = "Переименовать";
+                    })
+                    break
+                case "ru" :
+                    localStorage.setItem("lang" , "eng");
+                    settings_options[0].text = "Appearance"
+                    settings_options[0].under_text = "Customize how Notion looks on your device."
+                    settings_options[1].text = "Language"
+                    settings_options[1].under_text = "Change the language used in the user interface."
+                    option_text.innerText = settings_options[1].text;
+                    under_text.innerText = settings_options[1].under_text;
+                    document.querySelector(".settings_container p").innerText = "Settings"
+                    document.querySelector(".page_header_toggle h2").innerText = "Pages"
+                    document.querySelector(".theme_container p").innerText = "Theme"
+                    document.querySelector(".language_container p").innerText = "Language"
+                    document.querySelectorAll(".page_box_delete p").forEach(d => {
+                        d.innerText = "Delete";
+                    })
+                    document.querySelectorAll(".page_box_rename p").forEach(d => {
+                        d.innerText = "Rename";
+                    })
+                    break
+            }
         })
     }
 })
+
+function checkLang() {
+    if(localStorage.getItem("lang") === "eng") {
+        settings_options[0].text = "Appearance"
+        settings_options[0].under_text = "Customize how Notion looks on your device."
+        settings_options[1].text = "Language"
+        settings_options[1].under_text = "Change the language used in the user interface."
+        document.querySelector(".settings_container p").innerText = "Settings"
+        document.querySelector(".page_header_toggle h2").innerText = "Pages"
+        document.querySelector(".theme_container p").innerText = "Theme"
+        document.querySelector(".language_container p").innerText = "Language"
+        document.querySelectorAll(".page_box_delete p").innerText = "Delete"
+        document.querySelectorAll(".page_box_delete p").forEach(d => {
+            d.innerText = "Delete";
+        })
+        document.querySelectorAll(".page_box_rename p").forEach(d => {
+            d.innerText = "Rename";
+        })
+    } else {
+        settings_options[0].text = "Вид"
+        settings_options[0].under_text = "Настройте внешний вид Notion на вашем устройстве."
+        settings_options[1].text = "Язык"
+        settings_options[1].under_text = "Измените язык, используемый в пользовательском интерфейсе."
+        document.querySelector(".settings_container p").innerText = "Настройки"
+        document.querySelector(".page_header_toggle h2").innerText = "Страницы"
+        document.querySelector(".theme_container p").innerText = "Тема"
+        document.querySelector(".language_container p").innerText = "Язык"
+        document.querySelectorAll(".page_box_delete p").innerText = "Удалить"
+        document.querySelectorAll(".page_box_delete p").forEach(d => {
+            d.innerText = "Удалить"
+        })
+        document.querySelectorAll(".page_box_rename p").forEach(d => {
+            d.innerText = "Переименовать";
+        })
+    }
+}
+
+checkLang()
 
 //Change Theme
 function themeChange(e) {
