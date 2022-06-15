@@ -1,2 +1,2 @@
 # Notion
-![Notion_screenshot](file:///C:/Users/Admin/OneDrive/Projects/6MonthProgress/RoadMap_challenges/Notion/Notion_Project_screenshot.png)
+![Notion_screenshot](https://github.com/[10Arman10]/[Notion]/blob/[branch]/image.jpg?raw=true)
