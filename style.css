@@ -18,6 +18,7 @@
   --main-box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   --main-transition: all 0.2s ease-in-out 0s;
   --main-icon-padding: 0.9rem 1rem;
+  --text_p_color: #37352F;
   --main-border-radius: 50px;
   --background: var(--main-background-light);
   --bg: var(--bg_light);
@@ -27,6 +28,7 @@
 .dark_mode {
   --bg-dark: #222;
   --clr-color: #ffff;
+  --text_p_color: #ffff;
   --clr-title-color: #ffff;
   --light_active_list: #303030;
   --bg_light_side: #202020;
@@ -84,6 +86,7 @@ p {
   opacity: 1;
 }
 
+
 .add_template_btn {
   position: absolute;
   top: 50%;
@@ -93,8 +96,33 @@ p {
   opacity: 0;
 }
 
+.talk_box , 
+.keyboard_box , 
+.mouse_box {
+  min-width: 2rem;
+  text-align: center;
+  border-radius: 4px;
+}
+
+.keyboard_box {
+  margin: 0 .5rem;
+}
+
+.keyboard_box i {
+  color: #A19F9A;
+}
+
+.mouse_box i {
+  color: #A19F9A;
+}
+
 .add_template_btn i {
   pointer-events: none;
+}
+
+.created_template_btn {
+  position: relative;
+  right: 0; top: 0;
 }
 
 .block_selection {
@@ -123,6 +151,11 @@ p {
   margin: 0 0 0 .5rem !important;
 }
 
+.text {
+  margin: 1rem 0 0 0;
+  padding: 0 0 1rem 0;
+}
+
 .text_p , 
 .text_h1 ,
 .text_h2 ,
@@ -130,7 +163,8 @@ p {
 .text_p_bulleted ,
 .text_p_numbered ,
 .toggle ,
-.text_p_quote {
+.text_p_quote,
+.text_p_callout {
   outline: none;
   font-size: 1rem;
   max-width: 100%;
@@ -139,7 +173,47 @@ p {
   white-space: pre-wrap;
   word-break: break-word;
   padding: 3px 2px;
-  color: #37352F;
+  color: var(--text_p_color);
+}
+
+.text_callout_box {
+  margin: .5rem 0;
+}
+
+.text_p_callout {
+  margin: 0 !important;
+}
+
+.main_box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  width: 100%;
+  padding: 0 2rem 0 22rem;
+  max-width: 100%;
+  top: .9rem;
+}
+
+.three_boxes {
+  display: flex;
+}
+
+.talk_box button i {
+  font-size: 1rem;
+  color: #a19f9a;
+}
+
+.menu_dots {
+  margin: 0 .8rem;
+}
+
+.menu_dots button {
+  font-size: 1.4rem !important;
+}
+
+.menu_dots button i {
+  color: #55534E !important;
 }
 
 .favorite_box {
@@ -150,6 +224,17 @@ p {
 .favorite_box p {
   color: #979691;
   font-size: 0.9rem;
+}
+
+.text_p_callout {
+  pointer-events: all;
+}
+
+.text_callout_box {
+  background: #F1F1EF;
+  padding: .5rem;
+  border-radius: 4px;
+  pointer-events: none;
 }
 
 .divider {
@@ -239,22 +324,6 @@ p {
   display: block;
 }
 
-/* .talk_box {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-}
-
-.talk_box button {
-  background: #F1F1EF !important;
-  border-radius: 100% !important;
-  min-width: 2.5rem;
-}
-
-.talk_box i {
-  font-size: 1.5rem;
-} */
-
 .show {
   display: block;
 }
@@ -301,7 +370,10 @@ p {
   cursor: pointer;
 }
 
-.block:hover {
+.block:hover , 
+.talk_box:hover ,
+.keyboard_box:hover , 
+.mouse_box:hover   {
   background: var(--bg_hover_side);
 }
 
@@ -425,7 +497,7 @@ p {
 .menu_toggle_menu,
 .settings_toggle,
 .darkmodetoggle,
-.knight,
+.languageSelect_btn,
 .page_menu,
 .page_header_toggle,
 .page_box_delete,
@@ -434,7 +506,11 @@ p {
 .page_parent,
 .page_title_input_btn,
 .add_template_btn ,
-.talk_box button {
+.talk_box button ,
+.menu_dots button,
+.font_pref_btn , 
+.keyboard_box button , 
+.mouse_box button {
   border: none;
   background: none;
   color: var(--color);
@@ -636,26 +712,14 @@ p {
 }
 
 .upper_text {
-  position: absolute;
   top: .9rem;
   font-size: 1.5rem;
   color: var(--clr-title-color);
-  left: 24rem;
-  width: 50%;
+  position: relative;
+  top: 0;
+  left: 0rem;
   margin: 0.5rem;
   font-size: .9rem;
-  color: #a19f9a;
-}
-
-.talk_box {
-  position: absolute;
-  top: .9rem;
-  right: 2rem;
-  
-}
-
-.talk_box button i {
-  font-size: 1rem;
   color: #a19f9a;
 }
 
