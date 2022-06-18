@@ -798,6 +798,9 @@ user_name.addEventListener("input" , () => {
 
     name_logo.innerText = localStorage.getItem("user_name").charAt(0);
 })
+if (localStorage.getItem("user_name") === null || localStorage.getItem("user_name") === "") {
+    localStorage.setItem("user_name" , "");
+}
 name_logo.innerText = localStorage.getItem("user_name").charAt(0);
 user_name.innerHTML = localStorage.getItem("user_name");
 user_name_settings.innerHTML = localStorage.getItem("user_name");
