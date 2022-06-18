@@ -788,3 +788,12 @@ button i {
   font-size: 1rem;
   font-weight: normal;
 }
+
+@media screen and (max-width: 900px) {
+    .sidebar {
+      min-width: 100%;
+    }
+    .content_section {
+      width: 80%;
+    }
+}
