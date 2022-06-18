@@ -834,6 +834,11 @@ window.addEventListener("click" , (e) => {
 })
 
 //Sidebar Modal Settings
+
+if (!localStorage.getItem("lang")) {
+    localStorage.setItem("lang" , "eng");
+}
+
 settings_sidebar.addEventListener("click" , e => {
     if(e.target.classList[0] === "theme_container") {
         option_text.innerText = settings_options[0].text;
