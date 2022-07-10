@@ -1,4 +1,4 @@
-# Notion
+# Notion clone
 This project is not a ordinary Notion clone my take on Notion is with AI.
 With the help of python I added AI to my project such as
 
