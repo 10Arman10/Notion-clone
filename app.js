@@ -798,6 +798,10 @@ user_name.addEventListener("input" , () => {
 
     name_logo.innerText = localStorage.getItem("user_name").charAt(0);
 })
+
+if (localStorage.getItem("user_name") === null || localStorage.getItem("user_name") === "") {
+    localStorage.setItem("user_name" , "");
+}
 name_logo.innerText = localStorage.getItem("user_name").charAt(0);
 user_name.innerHTML = localStorage.getItem("user_name");
 user_name_settings.innerHTML = localStorage.getItem("user_name");
@@ -831,6 +835,11 @@ window.addEventListener("click" , (e) => {
 })
 
 //Sidebar Modal Settings
+
+if (!localStorage.getItem("lang")) {
+    localStorage.setItem("lang" , "eng");
+}
+
 settings_sidebar.addEventListener("click" , e => {
     if(e.target.classList[0] === "theme_container") {
         option_text.innerText = settings_options[0].text;
