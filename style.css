@@ -193,6 +193,7 @@ p {
   padding: 0 2rem 0 22rem;
   max-width: 100%;
   top: .9rem;
+  background: #ffff;
 }
 
 .three_boxes {
@@ -787,4 +788,13 @@ button i {
 .pages_container h2:nth-child(1) {
   font-size: 1rem;
   font-weight: normal;
+}
+
+@media screen and (max-width: 900px) {
+    .sidebar {
+      min-width: none;
+    }
+    .content_section {
+      width: 80%;
+    }
 }
